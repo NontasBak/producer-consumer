@@ -1,9 +1,9 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -pthread -lm
 TARGET = prod-cons
-SRCS = prod-cons.c queue.c
+SRCS = src/prod-cons.c src/queue.c
 OBJS = $(SRCS:.c=.o)
-HEADERS = prod-cons.h
+HEADERS = src/prod-cons.h
 
 all: $(TARGET)
 

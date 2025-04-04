@@ -22,6 +22,7 @@ typedef struct {
     pthread_mutex_t *mut;
     pthread_cond_t *notFull, *notEmpty;
     double total_wait_time;
+    int producers_done;
 } queue;
 
 queue *queueInit(void);
@@ -33,4 +34,4 @@ void *producer(void *args);
 void *consumer(void *args);
 void *calculate_sine(void *arg);
 
-#endif // PROD_CONS_H
+#endif  // PROD_CONS_H

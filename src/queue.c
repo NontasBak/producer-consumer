@@ -18,6 +18,7 @@ queue *queueInit(void) {
     q->head = 0;
     q->tail = 0;
     q->total_wait_time = 0;
+    q->producers_done = 0;
 
     q->mut = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
     pthread_mutex_init(q->mut, NULL);

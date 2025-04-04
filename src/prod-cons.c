@@ -10,10 +10,6 @@
 
 #define PI 3.1415
 
-void *producer(void *args);
-void *consumer(void *args);
-void *calculate_sine(void *arg);
-
 int main(int argc, char *argv[]) {
     int p, q;
     if (argc != 3) {
@@ -44,9 +40,14 @@ int main(int argc, char *argv[]) {
         pthread_join(pro[i], NULL);
     }
 
-    // Cancel consumer threads cause they never actually finish
+    pthread_mutex_lock(fifo->mut);
+    fifo->producers_done = 1;                // Producers have finished
+    pthread_cond_broadcast(fifo->notEmpty);  // Needed cause consumers might be stuck
+    pthread_mutex_unlock(fifo->mut);
+
+    // Now the consumers can return when they finish
     for (int i = 0; i < q; i++) {
-        pthread_cancel(con[i]);
+        pthread_join(con[i], NULL);
     }
 
     printf("----- WAITING TIME STATISTICS -----\n");
@@ -100,8 +101,16 @@ void *consumer(void *args) {
 
     while (1) {
         pthread_mutex_lock(fifo->mut);
-        while (fifo->empty) {
+
+        // Check if queue is empty AND all producers are done
+        while (fifo->empty && !fifo->producers_done) {
             pthread_cond_wait(fifo->notEmpty, fifo->mut);
+        }
+
+        // Exit if queue is empty and producers are done
+        if (fifo->empty && fifo->producers_done) {
+            pthread_mutex_unlock(fifo->mut);
+            break;
         }
 
         queueDel(fifo, &wf);
