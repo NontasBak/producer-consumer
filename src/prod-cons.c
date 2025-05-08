@@ -40,9 +40,13 @@ int main(int argc, char *argv[]) {
         pthread_join(pro[i], NULL);
     }
 
+    // For the sake of testing, once the producers finish
+    // executing, we will modify the producers_done variable
+    // to indicate to the consumers to stop running
     pthread_mutex_lock(fifo->mut);
-    fifo->producers_done = 1;                // Producers have finished
-    pthread_cond_broadcast(fifo->notEmpty);  // Needed cause consumers might be stuck
+    fifo->producers_done = 1;  // Producers have finished
+    pthread_cond_broadcast(
+        fifo->notEmpty);  // Needed cause consumers might be stuck
     pthread_mutex_unlock(fifo->mut);
 
     // Now the consumers can return when they finish
@@ -78,7 +82,6 @@ void *producer(void *args) {
 
         pthread_mutex_lock(fifo->mut);
         while (fifo->full) {
-            // printf("producer: queue FULL.\n");
             pthread_cond_wait(fifo->notFull, fifo->mut);
         }
 
