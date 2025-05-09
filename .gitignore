@@ -52,3 +52,7 @@ Mkfile.old
 dkms.conf
 
 instructions.md
+
+report.aux
+report.log
+report.synctex.gz

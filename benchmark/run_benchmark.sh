@@ -3,8 +3,8 @@
 CSV_FILE="benchmark_results.csv"
 echo "Producers,Consumers,Average_Waiting_Time_ms" > $CSV_FILE
 
-PRODUCER_VALUES=(1 2 4 6 8 10)
-CONSUMER_VALUES=(1 2 4 6 8 10)
+PRODUCER_VALUES=(1 2 4 6 8 10 14 18 22)
+CONSUMER_VALUES=(1 2 4 6 8 10 14 18 22)
 
 for p in "${PRODUCER_VALUES[@]}"; do
   for c in "${CONSUMER_VALUES[@]}"; do
