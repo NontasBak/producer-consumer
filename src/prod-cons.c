@@ -10,7 +10,7 @@
 
 #define PI 3.1415
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     int p, q;
     if (argc != 3) {
         fprintf(stderr, "Usage: %s <num_producers> <num_consumers>\n", argv[0]);
@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     p = atoi(argv[1]);
     q = atoi(argv[2]);
 
-    queue *fifo;
+    queue* fifo;
     pthread_t pro[p], con[q];
 
     fifo = queueInit();
@@ -63,15 +63,15 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void *producer(void *args) {
-    queue *fifo = (queue *)args;
+void* producer(void* args) {
+    queue* fifo = (queue*)args;
     srand(time(NULL));
 
     for (int i = 0; i < LOOP; i++) {
         // Create work item
         struct workFunction wf;
 
-        double *angles = malloc(sizeof(double) * NUM_ANGLES);
+        double* angles = malloc(sizeof(double) * NUM_ANGLES);
         for (int j = 0; j < NUM_ANGLES; j++) {
             // Generate random angles between 0 and 2π
             angles[j] = ((double)rand() / RAND_MAX) * 2 * PI;
@@ -96,8 +96,8 @@ void *producer(void *args) {
     return (NULL);
 }
 
-void *consumer(void *args) {
-    queue *fifo = (queue *)args;
+void* consumer(void* args) {
+    queue* fifo = (queue*)args;
     struct workFunction wf;
     struct timeval tv_diff;
     double wait_time_ms;
@@ -111,6 +111,7 @@ void *consumer(void *args) {
         }
 
         // Exit if queue is empty and producers are done
+        // Normally this wouldn't be needed in a real-world scenario
         if (fifo->empty && fifo->producers_done) {
             pthread_mutex_unlock(fifo->mut);
             break;
@@ -129,7 +130,7 @@ void *consumer(void *args) {
         pthread_cond_signal(fifo->notFull);
 
         // Execute the function
-        void *result = wf.work(wf.arg);
+        void* result = wf.work(wf.arg);
 
         free(wf.arg);
         free(result);
@@ -138,9 +139,9 @@ void *consumer(void *args) {
     return (NULL);
 }
 
-void *calculate_sine(void *arg) {
-    double *angles = (double *)arg;
-    double *results = malloc(sizeof(double) * NUM_ANGLES);
+void* calculate_sine(void* arg) {
+    double* angles = (double*)arg;
+    double* results = malloc(sizeof(double) * NUM_ANGLES);
 
     for (int i = 0; i < NUM_ANGLES; i++) {
         results[i] = sin(angles[i]);
